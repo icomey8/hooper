@@ -1,0 +1,40 @@
+hooper {
+	Program = Stmt+
+    Stmt = VarDec
+      | PrintStmt
+      | WhileStmt
+      | IfStmt
+      | AssignmentStmt
+      
+     VarDec = let id "=" Exp ";"
+     PrintStmt = log Exp ";"
+     AssignmentStmt = id "=" Exp ";"
+     IfStmt = if Exp Block (else(Block | IfStmt))?
+     WhileStmt = while Exp Block
+     Block = "{" Stmt+ "}" 
+     
+     Exp = Term 
+
+    Term = Term "+" Factor  -- plus
+     | Term "-" Factor  -- minus
+     | Factor
+    Factor = Factor "**" Primary  -- power
+        | Primary
+    Primary = "-" Primary  -- negate
+            | numeral
+            | "(" Exp ")"  -- parens
+            | id
+
+     
+     log = "log" ~idchar
+     let = "let" ~idchar
+     while = "while" ~idchar
+     if = "if" ~idchar
+     else = "else" ~idchar
+     keyword = log | while | if | else
+     id = ~keyword letter idchar*
+     idchar = letter | digit | "_"
+     numeral = digit+
+     
+    	
+}

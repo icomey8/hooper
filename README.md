@@ -11,8 +11,6 @@ Designing a new, unique language for CMSI 3802
 - inheritance
 - method overloading
 
-## types
-
 ## keyword guide
 
 | hooper   | Javascript    |

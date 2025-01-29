@@ -33,6 +33,9 @@ Designing a new, unique language for CMSI 3802
 ## example programs
 
 ### hello world
+| _hooper_   | _Javascript_    |
+| -------- | ------------- |
+| `log("hello world")`    | `print("hello world")`       |
 
 ### fibonacci sequence
 

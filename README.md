@@ -33,7 +33,7 @@ Designing a new, unique language for CMSI 3802
 ### hello world
 | _hooper_   | _Javascript_    |
 | -------- | ------------- |
-| `log("hello world")`    | `print("hello world")`       |
+| `log("hello world")`    | `console.log("hello world")`       |
 
 ### fibonacci sequence
 

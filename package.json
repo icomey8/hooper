@@ -1,0 +1,24 @@
+{
+	"name": "hooper",
+	"version": "1.0.0",
+	"description": "## intro",
+	"type": "module",
+	"main": "src/hooper.js",
+	"scripts": {
+		"test": "c8 node --test test/**/*.test.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/icomey8/hooper.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/icomey8/hooper/issues"
+	},
+	"homepage": "https://github.com/icomey8/hooper#readme",
+	"devDependencies": {
+		"c8": "^10.1.3"
+	}
+}

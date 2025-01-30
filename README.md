@@ -1,18 +1,21 @@
-# hooper
+
 ![hooper logo](docs/hooper.png)
 
-## intro
+# hooper
+> Created by Ian Comey and Jaime Quiogue
+
+## About
 
 Designing a new, unique language for CMSI 3802
 
-## features
+## Features
 
 - enforced encapsulation
 - static typing
 - inheritance
 - method overloading
 
-## keyword guide
+## Keyword Guide
 
 | hooper   | Javascript    |
 | -------- | ------------- |
@@ -29,7 +32,7 @@ Designing a new, unique language for CMSI 3802
 | putback  | else          |
 | to       | console.log() |
 
-## example programs
+## Example Programs
 
 ### hello world
 | _hooper_   | _Javascript_    |

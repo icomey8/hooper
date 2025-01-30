@@ -1,5 +1,5 @@
 # hooper
-![hooper logo]
+![hooper logo](docs/hooper.png)
 
 ## intro
 

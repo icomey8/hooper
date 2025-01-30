@@ -1,4 +1,5 @@
 # hooper
+![hooper logo]
 
 ## intro
 

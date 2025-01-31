@@ -6,7 +6,7 @@
 
 ## About
 
-Designing a new, unique language for CMSI 3802
+Inspired by our love of basketball and how creative it can be in all aspects of the sport, we're setting out to create a JavaScript-like language with some tweaks on syntax, structure, and concurrency.  For concurrency specifically, we want to explore an alternative solution with coroutines and channles instead of JS' existing event-loop approach. 
 
 ## Features
 

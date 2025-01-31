@@ -1,0 +1,8 @@
+pick num = 0;
+
+  shoot (num > 0) 
+    log("The number is positive.");
+  reb (num < 0) {
+    log("The number is negative.");
+  putback 
+    log("The number is zero.");

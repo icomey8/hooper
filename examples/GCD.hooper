@@ -1,0 +1,8 @@
+play gcd(a, b) {
+    dribble (b !== 0) {
+        pick temp = b;
+        b = a % b;
+        a = temp;
+    }
+    dunk a;
+}

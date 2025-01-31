@@ -1,0 +1,4 @@
+play Palindrome(s) 
+    pick ogstr = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    pick revstr = ogstr.split('').reverse().join('');
+    dunk ogstr === revstr;

@@ -37,10 +37,16 @@ Designing a new, unique language for CMSI 3802
 ### hello world
 | _hooper_   | _Javascript_    |
 | -------- | ------------- |
-| `log("hello world")`    | `console.log("hello world")`       |
+| `log("hello world")` | `console.log("hello world")`       |
 
 ### fibonacci sequence
-
+| _hooper_   | _JavaScript_    |
+|------------|----------------|
+| `play fibonacci(n)` | `function fibonacci(n) { `|
+| `pick sequence = [0, 1];`| `let sequence = [0, 1];` |
+| `for (i = 2; i < n; i++)` | `for (let i = 2; i < n; i++) {` |
+| `sequence.push(sequence[i - 1] + sequence[i - 2]);` | `sequence.push(sequence[i - 1] + sequence[i - 2]);` |
+| `dunk sequence;` | `return sequence; }` |    
 ### GCD
 
 ### Valid Palindrome

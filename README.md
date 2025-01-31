@@ -40,9 +40,39 @@ Inspired by our love of basketball and how creative it can be in all aspects of 
 | `console.log("hello world")` | `log("hello world")`       |
 
 ### fibonacci sequence
-| _Javascript_   | _hooper_    |
-|------------|----------------|
-| ```javascript<br>function fibonacci(n) {<br> &nbsp;&nbsp;let sequence = [0, 1];<br> &nbsp;&nbsp;for (let i = 2; i < n; i++) {<br> &nbsp;&nbsp;&nbsp;&nbsp;sequence.push(sequence[i - 1] + sequence[i - 2]);<br> &nbsp;&nbsp;}<br> &nbsp;&nbsp;return sequence;<br>}<br>console.log(fibonacci(10)); // Output: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]<br>``` | ```hooper<br>play fibonacci(n)<br>pick sequence = [0, 1];<br>for (i = 2; i < n; i++)<br>&nbsp;&nbsp;sequence.push(sequence[i - 1] + sequence[i - 2]);<br>dunk sequence;<br>``` |
+<table>  
+  <tr>  
+    <th>JavaScript</th>  
+    <th>Hooper</th>  
+  </tr>  
+  <tr>  
+    <td>  
+
+   ```javascript  
+    function fibonacci(n) {  
+        let sequence = [0, 1];  
+        for (let i = 2; i < n; i++) {  
+            sequence.push(sequence[i - 1] + sequence[i - 2]);  
+        }  
+        return sequence;  
+    }  
+   ```  
+
+   </td>  
+    <td>  
+
+ ```hooper  
+    play fibonacci(n)  
+       pick sequence = [0, 1]  
+       for (i = 2; i < n; i++)  
+          sequence.push(sequence[i - 1] + sequence[i - 2])  
+       dunk sequence  
+ ```  
+
+   </td>  
+  </tr>  
+</table>  
+
    
 ### GCD
 

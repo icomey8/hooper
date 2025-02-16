@@ -9,6 +9,3 @@ export default function parse(sourceCode) {
 		throw new Error(match.message);
 	}
 }
-
-// an interpreter runs the source code
-// a compiler translates the source code into something else

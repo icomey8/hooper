@@ -5,6 +5,7 @@ hooper {
       | WhileStmt
       | IfStmt
       | AssignmentStmt
+      | "++" Exp_id ";"         --increment
       
      VarDec = let id "=" Exp ";"
      PrintStmt = log Exp ";"
@@ -13,17 +14,18 @@ hooper {
      WhileStmt = while Exp Block
      Block = "{" Stmt+ "}" 
      
-     Exp = Term 
+    Exp = Term 
 
-    Term = Term "+" Factor  -- plus
-     | Term "-" Factor  -- minus
+    Term = Term "+" Factor  --plus
+     | Term "-" Factor  --minus
      | Factor
-    Factor = Factor "**" Primary  -- power
+    Factor = Factor "**" Primary  --power
         | Primary
-    Primary = "-" Primary  -- negate
+    Primary = "-" Primary  --negate
             | numeral
-            | "(" Exp ")"  -- parens
-            | id
+            | id            --id
+            | "(" Exp ")"  --parens
+            
 
      
      log = "log" ~idchar
@@ -34,7 +36,7 @@ hooper {
      keyword = log | while | if | else
      id = ~keyword letter idchar*
      idchar = letter | digit | "_"
-     numeral = digit+
+     numeral = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
      
     	
 }

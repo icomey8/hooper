@@ -8,4 +8,5 @@ export default function parse(sourceCode) {
 	if (match.failed()) {
 		throw new Error(match.message);
 	}
+	return match;
 }

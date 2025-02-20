@@ -5,7 +5,6 @@ hooper {
       | WhileStmt
       | IfStmt
       | AssignmentStmt
-      | "++" Exp_id ";"         --increment
       
      VarDec = let id "=" Exp ";"
      PrintStmt = log Exp ";"
@@ -25,6 +24,8 @@ hooper {
             | numeral
             | id            --id
             | "(" Exp ")"  --parens
+            | "[" Exp ("," Exp)* "]" --array 
+            | Primary "[" Exp "]" --subscript
             
 
      
@@ -37,6 +38,8 @@ hooper {
      id = ~keyword letter idchar*
      idchar = letter | digit | "_"
      numeral = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
+
+     space  += "//" (~"\n" any)*  --comment
      
     	
 }

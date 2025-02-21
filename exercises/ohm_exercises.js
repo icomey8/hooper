@@ -21,59 +21,89 @@ const grammars = {
 	   `,
 
 	 	notThreeEndingInOO: String.raw`
-	     word = ~twoAny "o" "o"  -- Reject three-letter words ending in "oo"
-	     | letter+          -- Otherwise, allow anything
-	     twoAny = letter letter   -- Any two-letter prefix
-	     letter = "a".."z" | "A".."Z"
+        word = letter+ ~("o" | "O") ("o" | "O") end
+
 	   `,
 
 	 	divisibleBy16: String.raw`
-	     binNum = "0" | ("1"|"0")* "0000"
-	   `,
+    binNum = ("0" "0"*) 
+          | (binPrefix "0000") 
+
+    binPrefix = ("1" | "0")*	   `,
 
 	 	eightThroughThirtyTwo: String.raw`
-	    num = "8".."9"  -- 8, 9
-	    	| "1" digit  -- 10-19
-	    	| "2" ("0".."9")  -- 20-29
-	    	| "3" ("0".."2")  -- 30, 31, 32
-	    digit = "0".."9"
+       num = digit8_9         
+           | oneToNineTeen    
+           | twentyToTwentyNine   
+           | thirtyToThirtyTwo   
+   
+       oneToNineTeen = "1" digit
+       twentyToTwentyNine = "2" digit
+       thirtyToThirtyTwo = "3" ("0" | "1" | "2")
+   
+       digit8_9 = "8" | "9"
 	   `,
 
 	 	notPythonPycharmPyc: String.raw`
-	    word = ~("python" | "pycharm" | "pyc") unicodeLetter+
-	   `,
+    word = ~("python" | "pycharm" | "pyc") letter+
+
+    float = number "." digit* "e" sign? exponent 
+    number = digit+
+    sign = "+" | "-"
+    exponent = digit digit? digit? 	   `,
 
 	 	restrictedFloats: String.raw`
-	    float = number "." digit* "e" sign? digit{1,3}  -- Required exponent
-	    number = digit+
-	    digit = "0".."9"
-	    sign = "+" | "-"
+ float = number "." digit* "e" sign? exponent  
+    number = digit+
+    sign = "+" | "-"
+    exponent = digit (digit digit?)? 
 	   `,
 
 	 	palindromes2358: String.raw`
-	    palindrome = twoPal | threePal | fivePal | eightPal
-     
-	    twoPal = letter letter
-	    threePal = letter letter letter
-	    fivePal = letter letter letter letter letter
-	    eightPal = letter letter letter letter letter letter letter letter
-     
-	    letter = "a" | "b" | "c"
+ palindrome = twoPal | threePal | fivePal | eightPal
+    
+    twoPal = customLetter customLetter
+    threePal = customLetter customLetter customLetter
+    fivePal = customLetter customLetter customLetter customLetter customLetter
+    eightPal = customLetter customLetter customLetter customLetter customLetter customLetter customLetter customLetter
+    
+    customLetter = "a" | "b" | "c"
 	   `,
 
 	 	pythonStringLiterals: String.raw`
-	   string = SingleQuoteString | DoubleQuoteString | TripleQuoteString
+string = singleQuotedString | doubleQuotedString | tripleQuotedString | fString
 
-	   SingleQuoteString = "'" singleBody "'"
-	   DoubleQuoteString = "\"" doubleBody "\""
-	   TripleQuoteString = ("'''" tripleBody "'''" | "\"\"\"" tripleBody "\"\"\"")
-	   
-    	   singleBody = ~"'" EscapedChar | any
-  	   doubleBody = ~"\"" EscapedChar | any
-  	   tripleBody = (~"'''" EscapedChar | any)*
+fString = ("f" | "F") (fSingleQuotedString | fDoubleQuotedString | fTripleQuotedString)
 
-  	   EscapedChar = "\\" ("n" | "t" | "\"" | "'" | "\\" | UnicodeEscape)
-  	   UnicodeEscape = "u{" hexDigit+ "}"
+singleQuotedString = "'" singleChar* "'"  
+doubleQuotedString = "\"" doubleChar* "\""  
+tripleQuotedString = "'''" tripleChar* "'''" 
+                   | "\"\"\"" tripleChar* "\"\"\""
+
+fSingleQuotedString = "'" fChar* "'"  
+fDoubleQuotedString = "\"" fChar* "\""  
+fTripleQuotedString = "'''" fChar* "'''" 
+                    | "\"\"\"" fChar* "\"\"\""
+
+singleChar = ~"'" escapedChar | any
+doubleChar = ~"\"" escapedChar | any
+tripleChar = ~("'''" | "\"\"\"") (escapedChar | any)
+
+fChar = ~"'" fEscapedChar | any
+fEscapedChar = "\\" (
+    "n" | "t" | "\"" | "'" | "\\" | validUnicodeEscape | incompleteUnicodeEscape
+)
+
+escapedChar = "\\" (
+    "n" | "t" | "\"" | "'" | "\\" | validUnicodeEscape
+)
+
+validUnicodeEscape = "\\" ("u" hexGroup4 | "U" hexGroup8)
+
+incompleteUnicodeEscape = "\\" ("u" | "U") ~hexDigit 
+
+hexGroup4 = hexDigit hexDigit hexDigit hexDigit
+hexGroup8 = hexDigit hexDigit hexDigit hexDigit hexDigit hexDigit hexDigit hexDigit
 	   `,
 };
 

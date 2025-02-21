@@ -16,37 +16,65 @@ const grammars = {
         d = digit
 	  `,
 
-	// 	masterCard: String.raw`
-	//     write your grammar here
-	//   `,
+	 	masterCard: String.raw`
+	      masterCard = ("51".."55" digit{14}) | ("2221".."2720" digit{12})
+	   `,
 
-	// 	notThreeEndingInOO: String.raw`
-	//     write your grammar here
-	//   `,
+	 	notThreeEndingInOO: String.raw`
+	     word = ~twoAny "o" "o"  -- Reject three-letter words ending in "oo"
+	     | letter+          -- Otherwise, allow anything
+	     twoAny = letter letter   -- Any two-letter prefix
+	     letter = "a".."z" | "A".."Z"
+	   `,
 
-	// 	divisibleBy16: String.raw`
-	//     write your grammar here
-	//   `,
+	 	divisibleBy16: String.raw`
+	     binNum = "0" | ("1"|"0")* "0000"
+	   `,
 
-	// 	eightThroughThirtyTwo: String.raw`
-	//     write your grammar here
-	//   `,
+	 	eightThroughThirtyTwo: String.raw`
+	    num = "8".."9"  -- 8, 9
+	    	| "1" digit  -- 10-19
+	    	| "2" ("0".."9")  -- 20-29
+	    	| "3" ("0".."2")  -- 30, 31, 32
+	    digit = "0".."9"
+	   `,
 
-	// 	notPythonPycharmPyc: String.raw`
-	//     write your grammar here
-	//   `,
+	 	notPythonPycharmPyc: String.raw`
+	    word = ~("python" | "pycharm" | "pyc") unicodeLetter+
+	   `,
 
-	// 	restrictedFloats: String.raw`
-	//     write your grammar here
-	//   `,
+	 	restrictedFloats: String.raw`
+	    float = number "." digit* "e" sign? digit{1,3}  -- Required exponent
+	    number = digit+
+	    digit = "0".."9"
+	    sign = "+" | "-"
+	   `,
 
-	// 	palindromes2358: String.raw`
-	//     write your grammar here
-	//   `,
+	 	palindromes2358: String.raw`
+	    palindrome = twoPal | threePal | fivePal | eightPal
+     
+	    twoPal = letter letter
+	    threePal = letter letter letter
+	    fivePal = letter letter letter letter letter
+	    eightPal = letter letter letter letter letter letter letter letter
+     
+	    letter = "a" | "b" | "c"
+	   `,
 
-	// 	pythonStringLiterals: String.raw`
-	//     write your grammar here
-	//   `,
+	 	pythonStringLiterals: String.raw`
+	   string = SingleQuoteString | DoubleQuoteString | TripleQuoteString
+
+	   SingleQuoteString = "'" singleBody "'"
+	   DoubleQuoteString = "\"" doubleBody "\""
+	   TripleQuoteString = ("'''" tripleBody "'''" | "\"\"\"" tripleBody "\"\"\"")
+	   
+    	   singleBody = ~"'" EscapedChar | any
+  	   doubleBody = ~"\"" EscapedChar | any
+  	   tripleBody = (~"'''" EscapedChar | any)*
+
+  	   EscapedChar = "\\" ("n" | "t" | "\"" | "'" | "\\" | UnicodeEscape)
+  	   UnicodeEscape = "u{" hexDigit+ "}"
+	   `,
 };
 
 function matches(name, string) {

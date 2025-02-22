@@ -59,16 +59,27 @@ const grammars = {
     exponent = digit (digit digit?)? 
 	   `,
 
-	 	palindromes2358: String.raw`
- palindrome = twoPal | threePal | fivePal | eightPal
-    
-    twoPal = customLetter customLetter
-    threePal = customLetter customLetter customLetter
-    fivePal = customLetter customLetter customLetter customLetter customLetter
-    eightPal = customLetter customLetter customLetter customLetter customLetter customLetter customLetter customLetter
-    
-    customLetter = "a" | "b" | "c"
-	   `,
+       palindromes2358: String.raw`
+       palindrome = twoPal | threePal | fivePal | eightPal
+     
+       twoPal = letter letter
+                &match2
+     
+       threePal = letter any letter
+                  &match3
+     
+       fivePal = letter any any any letter
+                 &match5
+     
+       eightPal = letter any any any any any any letter
+                  &match8
+     
+       match2 = ~letter letter
+       match3 = ~letter any letter
+       match5 = ~letter any any any letter
+       match8 = ~letter any any any any any any letter
+     `
+     
 
 	 	pythonStringLiterals: String.raw`
 string = singleQuotedString | doubleQuotedString | tripleQuotedString | fString

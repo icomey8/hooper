@@ -25,11 +25,14 @@ const grammars = {
 
 	   `,
 
-	 	divisibleBy16: String.raw`
-    binNum = ("0" "0"*) 
-          | (binPrefix "0000") 
-
-    binPrefix = ("1" | "0")*	   `,
+    divisibleBy16: String.raw`
+       binNum = zeroes | binaryWithFourZeros
+     
+       zeroes = "0"+
+       binaryWithFourZeros = "1" binary* "0000"
+       
+       binary = "0" | "1"
+     `,
 
 	 	eightThroughThirtyTwo: String.raw`
        num = digit8_9         

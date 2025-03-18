@@ -5,8 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-	outDir: "./dist",
-	base: "/hooper/",
+	site: "https://icomey8.github.io",
+	base: "/hooper",
 	vite: {
 		plugins: [tailwindcss()],
 	},

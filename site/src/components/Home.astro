@@ -1,0 +1,23 @@
+---
+import astroLogo from "../assets/astro.svg";
+import background from "../assets/background.svg";
+import Basketball from "../assets/bball.png";
+---
+
+<div class="w-full h-screen font-[inter]">
+	<main class="h-full grid grid-cols-2 items-center gap-20">
+		<div class="flex flex-col items-end">
+			<div>
+				<h1 class="text-6xl">hooper*</h1>
+				<section class="flex text-sm gap-3 pt-2">
+					<a href="/hooper/">home</a>
+					<a href="/hooper/about">about</a>
+					<a href="/hooper/examples">examples</a>
+					<a href="https://github.com/icomey8/hooper">github</a>
+				</section>
+			</div>
+		</div>
+
+		<img src={Basketball.src} alt="Basketball" />
+	</main>
+</div>

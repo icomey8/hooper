@@ -1,0 +1,182 @@
+---
+import { Code } from "astro:components";
+
+const helloWorld = [
+	`console.log('Hello World!') //js`,
+	`log(Hello World!) //hooper`,
+];
+const fibonacci = [
+	`function fibonacci(n) {  
+let sequence = [0, 1];  
+for (let i = 2; i < n; i++) {  
+ sequence.push(sequence[i - 1] + sequence[i - 2]);  
+}  
+ return sequence;  
+}  // js`,
+
+	`play fibonacci(n)  
+  pick sequence = [0, 1]  
+  for (i = 2; i < n; i++)  
+    sequence.push(sequence[i - 1] + sequence[i - 2])  
+    dunk sequence  // hooper `,
+];
+const gcd = [
+	`function gcd(a, b) {
+ while (b !== 0) {
+     [a, b] = [b, a % b];
+ }
+ return a;
+}  // js`,
+	`   play gcd(a, b) 
+       dribble (b !== 0) 
+           pick temp = b;
+           b = a % b;
+           a = temp; 
+       dunk a; // hooper`,
+];
+const palindrome = [
+	`function isPalindrome(str) {
+ let cleanStr = str.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+ return cleanStr === cleanStr.split('').reverse().join('');
+} // js`,
+	`play Palindrome(s) 
+   pick ogstr = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+   pick revstr = ogstr.split('').reverse().join('');
+   dunk ogstr === revstr; // hooper`,
+];
+const infiniteLoop = [
+	`
+while (true) {
+ console.log("This is an infinite loop!");
+} // js`,
+	`dribble(swish)
+ log("infinite dribble loop") // hooper`,
+];
+const conditionals = [
+	`let num = 0;
+
+if (num > 0) 
+ console.log("The number is positive.");
+else if (num < 0) {
+ console.log("The number is negative.");
+} 
+else 
+ console.log("The number is zero."); // js`,
+	`pick num = 0;
+
+ shoot (num > 0) 
+   log("The number is positive.");
+ reb (num < 0) {
+   log("The number is negative.");
+ putback 
+   log("The number is zero."); // hooper`,
+];
+---
+
+<div class="flex flex-col gap-3 row-span-2 max-h-[50vh] overflow-y-auto">
+	<div class="flex flex-col gap-3">
+		<h1 class="text-xl italic">Hello World</h1>
+		<div class="flex flex-wrap gap-4">
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={helloWorld[0]}
+					lang="js"
+					theme="tokyo-night"
+				/>
+			</div>
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={helloWorld[1]}
+					lang="js"
+					theme="ayu-dark"
+				/>
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-col gap-3">
+		<h1 class="text-xl italic">Fibonacci Sequence</h1>
+		<div class="flex flex-wrap gap-4">
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={fibonacci[0]}
+					lang="js"
+					theme="tokyo-night"
+				/>
+			</div>
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={fibonacci[1]}
+					lang="js"
+					theme="ayu-dark"
+				/>
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-col gap-3">
+		<h1 class="text-xl italic">GCD</h1>
+		<div class="flex flex-wrap gap-4">
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={gcd[0]}
+					lang="js"
+					theme="tokyo-night"
+				/>
+			</div>
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={gcd[1]}
+					lang="js"
+					theme="ayu-dark"
+				/>
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-col gap-3">
+		<h1 class="text-xl italic">Palindrome</h1>
+		<div class="flex flex-wrap gap-4">
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={palindrome[0]}
+					lang="js"
+					theme="tokyo-night"
+				/>
+			</div>
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={palindrome[1]}
+					lang="js"
+					theme="ayu-dark"
+				/>
+			</div>
+		</div>
+	</div>
+	<div class="flex flex-col gap-3">
+		<h1 class="text-xl italic">Infinite Loop</h1>
+		<div class="flex flex-wrap gap-4">
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={infiniteLoop[0]}
+					lang="js"
+					theme="tokyo-night"
+				/>
+			</div>
+			<div class="inline-block">
+				<Code
+					class="p-3 rounded-lg text-xs w-auto inline-block"
+					code={infiniteLoop[1]}
+					lang="js"
+					theme="ayu-dark"
+				/>
+			</div>
+		</div>
+	</div>
+</div>

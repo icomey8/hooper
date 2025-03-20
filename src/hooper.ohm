@@ -9,7 +9,7 @@ hooper {
                         | Primary_id "++" ";"               --increment
                         | Primary_id "--" ";"               --decrement  
       
-    VarDec              = let id "=" Exp ";"
+    VarDec              = pick id "=" Exp ";"
     PrintStmt           = log Exp ";"                   // add parens
     AssignmentStmt      = Primary_id "=" Exp ";"
     IfStmt              = if Exp Block (else(Block | IfStmt))?
@@ -42,13 +42,13 @@ hooper {
     comment = "//" (~"\n" any)*
 
      
-    let                 = "let" ~idchar
+    pick                 = "pick" ~idchar
     log                 = "log" ~idchar
     while               = "while" ~idchar
     if                  = "if" ~idchar
     else                = "else" ~idchar
     break               = "break" ~idchar
-    keyword             = log | while | if | else | break | let 
+    keyword             = log | while | if | else | break | pick 
     id                  = ~keyword letter idchar*
     idchar              = letter | digit | "_"
     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?

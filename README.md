@@ -1,5 +1,5 @@
 
-![hooper logo](docs/hooper.png)
+![hooper logo](docs/hooperLogo.png)
 
 # [hooper](https://icomey8.github.io/hooper/)
 > Created by Ian Comey and Jaime Quiogue

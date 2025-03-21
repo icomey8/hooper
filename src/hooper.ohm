@@ -1,20 +1,96 @@
+// hooper {
+//     Program             = (Stmt | comment)*
+//     Stmt                = VarDec
+//                         | PrintStmt
+//                         | WhileStmt
+//                         | IfStmt
+//                         | break ";"                         --break  
+//                         | AssignmentStmt
+//                         | Primary_id "++" ";"               --increment
+//                         | Primary_id "--" ";"               --decrement  
+      
+//     VarDec              = pick id "=" Exp ";"
+//     PrintStmt           = log Exp ";"                   // add parens
+//     AssignmentStmt      = Primary_id "=" Exp ";"
+//     IfStmt              = if Exp Block (putback(Block | IfStmt))?
+//     WhileStmt           = while Exp Block
+//     Block               = "{" Stmt+ "}" 
+     
+//     Exp                 = Condition relop Condition         --test
+//                         | Condition      
+
+//     Condition           = Exp "+" Term                      --add
+//                         | Exp "-" Term                      --sub
+//                         | Term
+
+//     Term                = Term "*" Factor                   --mult
+//                         | Term "/" Factor                   --div
+//                         | Term "%" Factor                   --mod
+//                         | Factor
+
+//     Factor              = Factor "**" Primary               --exp
+//                         | "-" Primary                       --neg
+//                         | Primary
+
+//     Primary             = numeral
+//                         | stringlit                         --string
+//                         | Primary "[" Exp "]"               --subscript
+//                         | id                                --id
+//                         | "[" ListOf<Exp, ","> "]"          --array
+//                         | "(" Exp ")"  --parens
+    
+//     comment = "//" (~"\n" any)*
+
+     
+//     pick                = "pick" ~idchar       // var
+//     log                 = "log" ~idchar
+//     while               = "while" ~idchar
+//     if                  = "if" ~idchar          // if
+//     putback             = "putback" ~idchar      // else
+//     break               = "break" ~idchar
+//     keyword             = log | while | if | putback | break | pick 
+//     id                  = ~keyword letter idchar*
+//     idchar              = letter | digit | "_"
+//     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
+//     stringlit = "\"" (~"\"" any)* "\""
+
+//     relop               = "<=" | "<" | "==" | "!=" | ">=" | ">"
+
+//     space               += comment
+     
+        
+// }
+
 hooper {
     Program             = (Stmt | comment)*
     Stmt                = VarDec
+                        | ConstDec                          --constdec
                         | PrintStmt
                         | WhileStmt
                         | IfStmt
                         | break ";"                         --break  
                         | AssignmentStmt
-                        | Primary_id "++" ";"               --increment
-                        | Primary_id "--" ";"               --decrement  
+                        | id "++" ";"                       --increment
+                        | id "--" ";"                       --decrement  
+                        | FunctionDec                       --funcdec
+                        | FunctionCall ";"                  --funccall
+                        | return Exp? ";"                   --return
       
     VarDec              = pick id "=" Exp ";"
-    PrintStmt           = log Exp ";"                   // add parens
-    AssignmentStmt      = Primary_id "=" Exp ";"
-    IfStmt              = if Exp Block (putback(Block | IfStmt))?
+    ConstDec            = const id "=" Exp ";"
+    PrintStmt           = log Exp ";"                   
+    AssignmentStmt      = id "=" Exp ";"
+    IfStmt              = if Exp Block (putback Block)? (putback IfStmt)?
     WhileStmt           = while Exp Block
-    Block               = "{" Stmt+ "}" 
+    Block               = "{" Stmt* "}" 
+    
+    FunctionDec         = func id "(" ListOf<Param, ","> ")" (":" Type)? Block
+    FunctionCall        = id "(" ListOf<Exp, ","> ")"
+    Param               = id ":" Type
+    Type                = prim_type
+                        | "[" Type "]"                      --array
+                        | "(" ListOf<Type, ","> ")" "->" Type  --function
+    prim_type           = "int" | "boolean" | "string" | "float" | "void" 
      
     Exp                 = Condition relop Condition         --test
                         | Condition      
@@ -34,29 +110,30 @@ hooper {
 
     Primary             = numeral
                         | stringlit                         --string
+                        | FunctionCall                      --call
                         | Primary "[" Exp "]"               --subscript
                         | id                                --id
                         | "[" ListOf<Exp, ","> "]"          --array
-                        | "(" Exp ")"  --parens
+                        | "(" Exp ")"                       --parens
     
-    comment = "//" (~"\n" any)*
-
-     
-    pick                = "pick" ~idchar       // var
+    comment             = "//" (~"\n" any)*
+    
+    pick                = "pick" ~idchar       
+    const               = "const" ~idchar      
     log                 = "log" ~idchar
     while               = "while" ~idchar
-    if                  = "if" ~idchar          // if
-    putback             = "putback" ~idchar      // else
+    if                  = "if" ~idchar          
+    putback             = "putback" ~idchar      
     break               = "break" ~idchar
-    keyword             = log | while | if | putback | break | pick 
+    func                = "func" ~idchar
+    return              = "return" ~idchar
+    keyword             = log | while | if | putback | break | pick | const | func | return
     id                  = ~keyword letter idchar*
     idchar              = letter | digit | "_"
     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
-    stringlit = "\"" (~"\"" any)* "\""
+    stringlit           = "\"" (~"\"" any)* "\""
 
     relop               = "<=" | "<" | "==" | "!=" | ">=" | ">"
 
     space               += comment
-     
-        
 }

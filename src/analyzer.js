@@ -1,207 +1,143 @@
 import * as core from "./core.js";
 
 class Context {
-	// Like most statically-scoped languages, Carlos contexts will contain a
-	// map for their locally declared identifiers and a reference to the parent
-	// context. The parent of the global context is null. In addition, the
-	// context records whether analysis is current within a loop (so we can
-	// properly check break statements), and reference to the current function
-	// (so we can properly check return statements).
-	constructor({
-		parent = null,
-		locals = new Map(),
-		inLoop = false,
-		function: f = null,
-	}) {
-		Object.assign(this, { parent, locals, inLoop, function: f });
-	}
-	add(name, entity) {
-		this.locals.set(name, entity);
-	}
-	lookup(name) {
-		return this.locals.get(name) || this.parent?.lookup(name);
-	}
-	static root() {
-		return new Context({
-			locals: new Map(Object.entries(core.standardLibrary)),
-		});
-	}
-	newChildContext(props) {
-		return new Context({ ...this, ...props, parent: this, locals: new Map() });
-	}
+    constructor({ parent = null, locals = new Map(), inLoop = false, func = null }) {
+        Object.assign(this, { parent, locals, inLoop, func });
+    }
+
+    add(name, entity) {
+        this.locals.set(name, entity);
+    }
+
+    lookup(name) {
+        return this.locals.get(name) || this.parent?.lookup(name);
+    }
+
+    static root() {
+        return new Context({
+            locals: new Map(Object.entries(core.standardLibrary)),
+        });
+    }
+
+    newChildContext(props) {
+        return new Context({ ...this, ...props, parent: this, locals: new Map() });
+    }
 }
 
 export default function analyze(match) {
-	const grammar = match.matcher.grammar;
+    const grammar = match.matcher.grammar;
+    const globals = Context.root();
 
-	const locals = new Map(); // string -> entity
-	const target = [];
 
-	function emit(line) {
-		target.push(line);
-	}
+    function check(condition, message, node) {
+        if (!condition) {
+            throw new Error(`${node.source.getLineAndColumnMessage()} ${message}`);
+        }
+    }
 
-	function check(condition, message, parseTreeNode) {
-		if (!condition) {
-			throw new Error(
-				`${parseTreeNode.source.getLineAndColumnMessage()} ${message}`
-			);
-		}
-	}
+    function checkDeclared(context, name, node) {
+        check(context.lookup(name), `Undeclared variable: ${name}`, node);
+    }
 
-	function checkNumber(e, parseTreeNode) {
-		check(e.type === "number", `Expected number`, parseTreeNode);
-	}
+    function checkType(expected, actual, node) {
+        check(expected === actual, `Type mismatch: expected ${expected}, found ${actual}`, node);
+    }
 
-	function checkBoolean(e, parseTreeNode) {
-		check(e.type === "boolean", `Expected boolean`, parseTreeNode);
-	}
+    function checkFunctionCall(context, name, args, node) {
+        const func = context.lookup(name);
+        check(func, `Undefined function: ${name}`, node);
+        check(func.params.length === args.length, `Function ${name} expects ${func.params.length} arguments, got ${args.length}`, node);
+        func.params.forEach((param, i) => checkType(param.type, args[i].type, node));
+    }
 
-	function checkNotDeclared(name, parseTreeNode) {
-		check(
-			!locals.has(name),
-			`Variable already declared: ${name}`,
-			parseTreeNode
-		);
-	}
+    function checkReturnType(context, returnType, node) {
+        check(context.func !== null, "Return statement outside function", node);
+        checkType(context.func.returnType, returnType, node);
+    }
 
-	function checkAllElementsHaveSameType(elements, parseTreeNode) {
-		if (elements.length > 0) {
-			const type = elements[0].type;
-			for (const e of elements) {
-				check(
-					e.type === type,
-					`all elements must have the same type`,
-					parseTreeNode
-				);
-			}
-		}
-	}
+    // === Ohm Semantics Object ===
+    const analyzer = grammar.createSemantics().addOperation("analyze", {
+        Program(statements) {
+            return statements.children.map(stmt => stmt.analyze(globals));
+        },
 
-	function checkDeclared(name, parseTreeNode) {
-		check(locals.has(name), `Undeclared variable: ${name}`, parseTreeNode);
-	}
+        VarDec(_pick, id, _eq, exp, _semi) {
+            const initializer = exp.analyze(this.args.context);
+            this.args.context.add(id.sourceString, { type: initializer.type, isConstant: false });
+            return core.variableDeclaration(id.sourceString, initializer);
+        },
 
-	const analyzer = grammar.createSemantics().addOperation("analyze", {
-		Program(statements) {
-			return core.program(statements.children.map((s) => s.analyze));
-		},
-		Stmt_increment(_op, id, _semi) {
-			const variable = id.analyze();
-			return core.incrementStatement(variable);
-		},
-		Stmt_break(_break, _semi) {
-			return core.breakStatement();
-		},
-		VarDec(_let, id, _eq, exp, _semi) {
-			checkNotDeclared(id.sourceString, id);
-			const initializer = exp.analyze();
-			const variable = variable(id.sourceString, initializer.type, true);
-			locals.set(id.sourceString, variable);
-			return core.variableDeclaration(variable, initializer);
-		},
-		PrintStmt(_print, exp, _semi) {
-			const argument = exp.analyze();
-			return core.printStatement(argument);
-		},
-		AssignmentStmt(id, _eq, exp, _semi) {
-			const source = exp.analyze();
-			const target = id.analyze();
-			// checkSameTypes(source, target, id);
-			return core.assignmentStatement(source, target);
-		},
-		WhileStmt(_while, exp, block) {
-			const test = exp.analyze();
-			checkBoolean(test, exp);
-			const body = block.analyze();
-			return core.whileStatement(test, body);
-		},
-		Block(_open, statements, _close) {
-			return statements.children.map((s) => s.analyze());
-		},
-		Exp_test(left, op, right) {
-			const x = left.analyze();
-			const y = right.analyze();
-			// TODO: this is good for now but chnage when we add string, arrs, and objects
-			if (op.sourceString === "==" || op.sourceString === "!=") {
-				check(x.type === y.type, `Type mismatch`, op);
-			} else {
-				checkNumber(x, left);
-				checkNumber(y, right);
-			}
-			return core.binaryExpression(op.sourceString, x, y, "boolean");
-		},
-		Condition_add(left, _op, right) {
-			const x = left.analyze();
-			const y = right.analyze();
-			checkNumber(x, left);
-			checkNumber(y, right);
-			return core.binaryExpression("+", x, y, "number");
-		},
-		Condition_sub(left, _op, right) {
-			const x = left.analyze();
-			const y = right.analyze();
-			checkNumber(x, left);
-			checkNumber(y, right);
-			return core.binaryExpression("-", x, y, "number");
-		},
-		Term_mul(left, _op, right) {
-			const x = left.analyze();
-			const y = right.analyze();
-			checkNumber(x, left);
-			checkNumber(y, right);
-			return core.binaryExpression("*", x, y, "number");
-		},
-		Term_div(left, _op, right) {
-			const x = left.analyze();
-			const y = right.analyze();
-			checkNumber(x, left);
-			checkNumber(y, right);
-			return core.binaryExpression("/", x, y, "number");
-		},
-		Term_mod(left, _op, right) {
-			return `(${left.analyze()} % ${right.analyze()})`;
-		},
-		Primary_parens(_open, exp, _close) {
-			return exp.analyze();
-		},
-		Factor_neg(_op, operand) {
-			return core.unaryExpression("-", operand.analyze(), "number");
-		},
-		Factor_exp(left, _op, right) {
-			return core.binaryExpression(
-				"**",
-				left.analyze(),
-				right.analyze(),
-				"number"
-			);
-		},
-		Primary_array(open, elements, _close) {
-			const contents = elements.asIteration().children.map((e) => e.analyze());
-			checkAllElementsHaveSameType(contents, open);
-			const elemType = contents.length > 0 ? contents[0].type : "any";
-			return core.arrayExpression(contents, `${elemType}[]`);
-		},
-		Primary_subscript(array, _open, index, _close) {
-			return core.subscriptExpression(array.analyze(), index.analyze());
-		},
-		numeral(digits, _dot, _fractional, _e, _sign, _exponent) {
-			return Number(this.sourceString);
-		},
-		id(_first, _rest) {
-			const entity = locals.get(this.sourceString);
-			checkDeclared(this.sourceString, this);
-			return entity;
-		},
-		true(_) {
-			return true;
-		},
-		false(_) {
-			return false;
-		},
-	});
+        ConstDec(_const, id, _eq, exp, _semi) {
+            const initializer = exp.analyze(this.args.context);
+            this.args.context.add(id.sourceString, { type: initializer.type, isConstant: true });
+            return core.variableDeclaration(id.sourceString, initializer);
+        },
 
-	return analyzer(match).analyze();
+        AssignmentStmt(id, _eq, exp, _semi) {
+            checkDeclared(this.args.context, id.sourceString, id);
+            const source = exp.analyze(this.args.context);
+            const target = this.args.context.lookup(id.sourceString);
+            check(!target.isConstant, `Cannot assign to immutable variable: ${id.sourceString}`, id);
+            checkType(target.type, source.type, id);
+            return core.assignmentStatement(target, source);
+        },
+
+        FunctionDec(_play, id, _open, params, _close, block) {
+            const paramList = params.asIteration().children.map(p => ({ name: p.sourceString, type: "unknown" }));
+            this.args.context.add(id.sourceString, { params: paramList, returnType: "unknown" });
+
+            const functionContext = this.args.context.newChildContext({ func: { name: id.sourceString, returnType: "unknown", params: paramList } });
+            block.analyze(functionContext);
+            
+            return core.functionDeclaration(id.sourceString, paramList, block);
+        },
+
+        FunctionCall(id, _open, args, _close) {
+            const evaluatedArgs = args.asIteration().children.map(arg => arg.analyze(this.args.context));
+            checkFunctionCall(this.args.context, id.sourceString, evaluatedArgs, id);
+            return core.functionCall(id.sourceString, evaluatedArgs);
+        },
+
+        ReturnStmt(_dunk, exp, _semi) {
+            const returnValue = exp.analyze(this.args.context);
+            checkReturnType(this.args.context, returnValue.type, exp);
+            return core.returnStatement(returnValue);
+        },
+
+        WhileStmt(_dribble, exp, block) {
+            const condition = exp.analyze(this.args.context);
+            checkType("boolean", condition.type, exp);
+            const loopContext = this.args.context.newChildContext({ inLoop: true });
+            return core.whileStatement(condition, block.analyze(loopContext));
+        },
+
+        BreakStmt(_turnover, _semi) {
+            check(this.args.context.inLoop, "Break statement outside loop", this);
+            return core.breakStatement();
+        },
+
+        IfStmt(_shoot, exp, block, _reb, elseBlock, _putback) {
+            const condition = exp.analyze(this.args.context);
+            checkType("boolean", condition.type, exp);
+            return core.ifStatement(condition, block.analyze(this.args.context), elseBlock?.analyze(this.args.context));
+        },
+
+        Exp_test(left, op, right) {
+            const x = left.analyze(this.args.context);
+            const y = right.analyze(this.args.context);
+            
+            if (op.sourceString === "==" || op.sourceString === "!=") {
+                checkType(x.type, y.type, op);
+            } else {
+                checkType("number", x.type, left);
+                checkType("number", y.type, right);
+            }
+            
+            return core.binaryExpression(op.sourceString, x, y, "boolean");
+        }
+    });
+
+    return analyzer(match).analyze();
 }
 
 Number.prototype.type = "number";

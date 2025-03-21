@@ -1,17 +1,19 @@
 
 ![hooper logo](docs/hooper.png)
 
-# hooper
+# [hooper](https://icomey8.github.io/hooper/)
 > Created by Ian Comey and Jaime Quiogue
 
 ## About
 
-Inspired by our love of basketball and how creative it can be in all aspects of the sport, we're setting out to create a JavaScript-like language with some tweaks on syntax, structure, and concurrency.  For concurrency specifically, we want to explore an alternative solution with coroutines and channels instead of JS' existing event-loop approach. 
+Inspired by our love of basketball and how creative it can be in all aspects of the sport, we're setting out to create a JavaScript-like language with some tweaks on syntax, structure, and concurrency.
+When it comes to concurrency, we're especially interested in exploring its inner workings to better understand the event-driven loop.
+To make the language more fun and engaging, we've incorporated basketball-related terminology—something fellow fans might appreciate. 
 
 ## Features
 
+- static typing (in-progress)
 - enforced encapsulation
-- static typing
 - inheritance
 - method overloading
 
@@ -27,7 +29,6 @@ Inspired by our love of basketball and how creative it can be in all aspects of 
 | play     | func          |
 | foul     | null literal  |
 | dribble  | while         |
-| shoot    | if            |
 | reb      | else if       |
 | putback  | else          |
 | to       | console.log() |
@@ -35,9 +36,9 @@ Inspired by our love of basketball and how creative it can be in all aspects of 
 ## Example Programs
 
 ### hello world
-| _Javascript   | _hooper_    |
+| _Javascript_   | _hooper_    |
 | -------- | ------------- |
-| `console.log("hello world")` | `log("hello world")`       |
+| `console.log("hello world")` | `log("hello world")`      |
 
 ### fibonacci sequence
 <table>  
@@ -61,7 +62,7 @@ function fibonacci(n) {
    </td>  
     <td>  
 
- ```hooper  
+ ```python  
  play fibonacci(n)  
    pick sequence = [0, 1]  
    for (i = 2; i < n; i++)  
@@ -96,7 +97,7 @@ function gcd(a, b) {
    </td>  
     <td>  
 
- ```hooper  
+ ```python  
     play gcd(a, b) 
         dribble (b !== 0) 
             pick temp = b;
@@ -129,7 +130,7 @@ function isPalindrome(str) {
    </td>  
     <td>  
 
- ```hooper  
+ ```python  
 play Palindrome(s) 
     pick ogstr = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     pick revstr = ogstr.split('').reverse().join('');
@@ -160,7 +161,7 @@ while (true) {
    </td>  
     <td>  
 
- ```hooper  
+ ```python  
 dribble(swish)
   log("infinite dribble loop")
  ```  
@@ -195,7 +196,7 @@ else
    </td>  
     <td>  
 
- ```hooper  
+ ```python  
 pick num = 0;
 
   shoot (num > 0) 

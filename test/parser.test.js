@@ -14,7 +14,7 @@ const syntaxErrors = [
 	["malformed number", "pick x= 2.;", /Line 1, col 11:/],
 	["a float with an E but no exponent", "pick x = 5E * 11;", /Line 1, col 12:/],
 	["a missing right operand", "log(5 -);", /Line 1, col 8:/],
-	["assignments", "abc=9*3; a=1; a--; c++;"], // this needs to be invalid
+	["assignments with missing value", "abc=9*3; a=; a--;", /Line 1, col 12:/],
 	["this is an invalid comment", "# i am a python comment!;", /Line 1, col 1:/],
 ];
 

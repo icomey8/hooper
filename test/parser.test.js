@@ -8,6 +8,8 @@ const syntaxChecks = [
 	["variable declarations", "pick e=99*1;\npick z=false;"],
 	["assignments", "abc=9*3; a=1; a--; c++;"],
 	["this is an valid comment", "// i am a hooper comment!"],
+	["short if", "if x == 2 { log(2); }"],
+	["if with an else statement", "if x == 2 { log(2); } putback { log(3);} "],
 ];
 
 const syntaxErrors = [
@@ -16,6 +18,8 @@ const syntaxErrors = [
 	["a missing right operand", "log(5 -);", /Line 1, col 8:/],
 	["assignments with missing value", "abc=9*3; a=; a--;", /Line 1, col 12:/],
 	["this is an invalid comment", "# i am a python comment!;", /Line 1, col 1:/],
+	["invalid short if", "if { log(2); }", /Line 1, col 4:/],
+	["if as identifier", "if x = 3;", /Line 1, col 6:/],
 ];
 
 describe("The parser", () => {

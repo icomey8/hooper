@@ -21,7 +21,7 @@ export function incrementStatement(variable) {
 	};
 }
 
-export function breakStatement() {
+export function makeBreakStatement() {
 	return {
 		kind: "break",
 	};

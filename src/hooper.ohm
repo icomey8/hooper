@@ -1,102 +1,44 @@
-// hooper {
-//     Program             = (Stmt | comment)*
-//     Stmt                = VarDec
-//                         | PrintStmt
-//                         | WhileStmt
-//                         | IfStmt
-//                         | break ";"                         --break  
-//                         | AssignmentStmt
-//                         | Primary_id "++" ";"               --increment
-//                         | Primary_id "--" ";"               --decrement  
-      
-//     VarDec              = pick id "=" Exp ";"
-//     PrintStmt           = log Exp ";"                   // add parens
-//     AssignmentStmt      = Primary_id "=" Exp ";"
-//     IfStmt              = if Exp Block (putback(Block | IfStmt))?
-//     WhileStmt           = while Exp Block
-//     Block               = "{" Stmt+ "}" 
-     
-//     Exp                 = Condition relop Condition         --test
-//                         | Condition      
-
-//     Condition           = Exp "+" Term                      --add
-//                         | Exp "-" Term                      --sub
-//                         | Term
-
-//     Term                = Term "*" Factor                   --mult
-//                         | Term "/" Factor                   --div
-//                         | Term "%" Factor                   --mod
-//                         | Factor
-
-//     Factor              = Factor "**" Primary               --exp
-//                         | "-" Primary                       --neg
-//                         | Primary
-
-//     Primary             = numeral
-//                         | stringlit                         --string
-//                         | Primary "[" Exp "]"               --subscript
-//                         | id                                --id
-//                         | "[" ListOf<Exp, ","> "]"          --array
-//                         | "(" Exp ")"  --parens
-    
-//     comment = "//" (~"\n" any)*
-
-     
-//     pick                = "pick" ~idchar       // var
-//     log                 = "log" ~idchar
-//     while               = "while" ~idchar
-//     if                  = "if" ~idchar          // if
-//     putback             = "putback" ~idchar      // else
-//     break               = "break" ~idchar
-//     keyword             = log | while | if | putback | break | pick 
-//     id                  = ~keyword letter idchar*
-//     idchar              = letter | digit | "_"
-//     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
-//     stringlit = "\"" (~"\"" any)* "\""
-
-//     relop               = "<=" | "<" | "==" | "!=" | ">=" | ">"
-
-//     space               += comment
-     
-        
-// }
-
 hooper {
-    Program             = (Stmt | comment)*
+    Program             = Stmt*
     Stmt                = VarDec
-                        | ConstDec                          --constdec
+                        | FunctionDec                       
                         | PrintStmt
-                        | WhileStmt
-                        | IfStmt
-                        | break ";"                         --break  
                         | AssignmentStmt
-                        | id "++" ";"                       --increment
-                        | id "--" ";"                       --decrement  
-                        | FunctionDec                       --funcdec
-                        | FunctionCall ";"                  --funccall
-                        | return Exp? ";"                   --return
+                        | IfStmt
+                        | WhileStmt
+                        | break ";"                                         --break  
+                        | IncrementStmt
+                        | dunk Exp? ";"                                     --dunk
       
-    VarDec              = pick id "=" Exp ";"
-    ConstDec            = const id "=" Exp ";"
+    VarDec              = (pick | const) id ":" Type "=" Exp ";"            --withtype
+                        | (pick | const) id "=" Exp ";"                     --inference
+    FunctionDec         = defineplay id Params ("->" Type)? Block
+    Params              = "(" ListOf<Param, ","> ")"
+    Param               = id ":" Type
+
     PrintStmt           = log Exp ";"                   
     AssignmentStmt      = id "=" Exp ";"
-    IfStmt              = if Exp Block (putback Block)? (putback IfStmt)?
+    IfStmt              = if Exp Block (putback Block)? (putback IfStmt)? // test `if Exp Block (putback IfStmt | putback Block)?`
     WhileStmt           = while Exp Block
     Block               = "{" Stmt* "}" 
+    IncrementStmt       = (Primary_subscript | Primary_id) "++" ";"
+    // add decrement
     
-    FunctionDec         = func id "(" ListOf<Param, ","> ")" (":" Type)? Block
+    
     FunctionCall        = id "(" ListOf<Exp, ","> ")"
-    Param               = id ":" Type
-    Type                = prim_type
-                        | "[" Type "]"                      --array
-                        | "(" ListOf<Type, ","> ")" "->" Type  --function
-    prim_type           = "int" | "boolean" | "string" | "float" | "void" 
+    Type                = "Arr[" Type "]"                                   --array                 
+                        | prim_type
+    prim_type           = "int" | "boolean" | "string" | "float" 
      
-    Exp                 = Condition relop Condition         --test
+    Exp                 = Exp1
+
+    Exp1                = Exp2 ("or" Exp2)*              --or   
+    Exp2                = Exp3 ("and" Exp3)*             --and
+    Exp3                = Condition relop Condition      --test
                         | Condition      
 
-    Condition           = Exp "+" Term                      --add
-                        | Exp "-" Term                      --sub
+    Condition           = Condition "+" Term             --add
+                        | Condition "-" Term             --sub
                         | Term
 
     Term                = Term "*" Factor                   --mult
@@ -108,16 +50,17 @@ hooper {
                         | "-" Primary                       --neg
                         | Primary
 
-    Primary             = numeral
+    Primary             = true ~mut
+                        | false ~mut
+                        | numeral
                         | stringlit                         --string
-                        | FunctionCall                      --call
+                        | FunctionCall ~mut                 --call
                         | Primary "[" Exp "]"               --subscript
                         | id                                --id
-                        | "[" ListOf<Exp, ","> "]"          --array
+                        | "[[" ListOf<Exp, ","> "]]"        --array
                         | "(" Exp ")"                       --parens
     
-    comment             = "//" (~"\n" any)*
-    
+    mut                 = ~"==" "=" | "++" | "--"
     pick                = "pick" ~idchar       
     const               = "const" ~idchar      
     log                 = "log" ~idchar
@@ -125,9 +68,11 @@ hooper {
     if                  = "if" ~idchar          
     putback             = "putback" ~idchar      
     break               = "break" ~idchar
-    func                = "func" ~idchar
-    return              = "return" ~idchar
-    keyword             = log | while | if | putback | break | pick | const | func | return
+    defineplay          = "define play" ~idchar
+    dunk                = "dunk" ~idchar
+    true                = "true" ~idchar    
+    false               = "false" ~idchar
+    keyword             = pick | const | log | while | if | putback | break | defineplay | dunk | true | false
     id                  = ~keyword letter idchar*
     idchar              = letter | digit | "_"
     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?
@@ -135,5 +80,5 @@ hooper {
 
     relop               = "<=" | "<" | "==" | "!=" | ">=" | ">"
 
-    space               += comment
+    space               += "#" (~"\n" any)*          --comment
 }

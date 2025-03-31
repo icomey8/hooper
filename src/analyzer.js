@@ -250,7 +250,27 @@ export default function analyze(match) {
 		Block(_open, statements, _close) {
 			return statements.children.map((s) => s.analyze());
 		},
-		Exp_test(left, op, right) {
+		Exp1_or(exp, _ops, exps) {
+			let left = exp.analyze();
+			checkBoolean(left, exp);
+			for (let e of exps.children) {
+				let right = e.analyze();
+				checkBoolean(right, exp);
+				left = core.binaryExpression("or", left, right, "boolean");
+			}
+			return left;
+		},
+		Exp2_and(exp, _ops, exps) {
+			let left = exp.analyze();
+			checkBoolean(left, exp);
+			for (let e of exps.children) {
+				let right = e.analyze();
+				checkBoolean(right, exp);
+				left = core.binaryExpression("and", left, right, "boolean");
+			}
+			return left;
+		},
+		Exp3_test(left, op, right) {
 			const x = left.analyze();
 			const y = right.analyze();
 			if (op.sourceString === "==" || op.sourceString === "!=") {

@@ -32,15 +32,17 @@ hooper {
                         | prim_type
     prim_type           = "number" | "boolean" | "string"
      
-    Exp                 = Condition relop Condition      --test
-                        | Condition 
 
-    // Exp                 = Exp1
+    Exp                 = Exp1
 
-    // Exp1                = Exp2 ("or" Exp2)*              --or   
-    // Exp2                = Exp3 ("and" Exp3)*             --and
-    // Exp3                = Condition relop Condition      --test
-    //                     | Condition      
+    Exp1                = Exp2 ("or" Exp2)+              --or   
+                        | Exp2 
+
+    Exp2                = Exp3 ("and" Exp3)+             --and
+                        | Exp3
+
+    Exp3                = Condition relop Condition      --test
+                        | Condition      
 
     Condition           = Condition "+" Term             --add
                         | Condition "-" Term             --sub

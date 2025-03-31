@@ -25,9 +25,12 @@ const semanticChecks = [
 
 // Programs that are syntactically correct but have semantic errors
 const semanticErrors = [
-	// ["non-int increment", "let x=false;x++;", /an integer/],
-	// ["undeclared id", "print(x);", /Identifier x not declared/],
-	// ["assign to const", "const x = 1;x = 2;", /Cannot assign to immutable/],
+	["call non-function", "pick f = 1; pick x = f(5);", /not a function/],
+  	["duplicate variable in same scope", "pick x = 1; pick x = 2;", /already declared/],
+  	["shadowing variable", "pick x = 1; if true { pick x = 2; }", /already declared/],
+	["bad index type", 'pick a = [1, 2]; pick i = "0"; pick x = a[i];', /Expected number/],
+  	["non-subscriptable", "pick a = 42; pick x = a[0];", /Expected string or array/],
+  	["nil without type", "pick x = nil;", /Cannot use nil without a type/],
 ];
 
 describe("The analyzer", () => {

@@ -17,25 +17,30 @@ hooper {
     Param               = id ":" Type
 
     PrintStmt           = log Exp ";"                   
-    AssignmentStmt      = id "=" Exp ";"
-    IfStmt              = if Exp Block (putback Block)? (putback IfStmt)? // test `if Exp Block (putback IfStmt | putback Block)?`
+    AssignmentStmt      = (Primary_subscript | Primary_id) "=" Exp ";"
+
+    IfStmt              = if Exp Block putback Block     --long
+                        | if Exp Block putback IfStmt    --elsif
+                        | if Exp Block                   --short
     WhileStmt           = while Exp Block
     Block               = "{" Stmt* "}" 
     IncrementStmt       = (Primary_subscript | Primary_id) "++" ";"
     // add decrement
     
     
-    FunctionCall        = id "(" ListOf<Exp, ","> ")"
     Type                = "Arr[" Type "]"                                   --array                 
                         | prim_type
-    prim_type           = "int" | "boolean" | "string" | "float" 
+    prim_type           = "number" | "boolean" | "string"
      
-    Exp                 = Exp1
+    Exp                 = Condition relop Condition      --test
+                        | Condition 
 
-    Exp1                = Exp2 ("or" Exp2)*              --or   
-    Exp2                = Exp3 ("and" Exp3)*             --and
-    Exp3                = Condition relop Condition      --test
-                        | Condition      
+    // Exp                 = Exp1
+
+    // Exp1                = Exp2 ("or" Exp2)*              --or   
+    // Exp2                = Exp3 ("and" Exp3)*             --and
+    // Exp3                = Condition relop Condition      --test
+    //                     | Condition      
 
     Condition           = Condition "+" Term             --add
                         | Condition "-" Term             --sub
@@ -52,15 +57,16 @@ hooper {
 
     Primary             = true ~mut
                         | false ~mut
+                        | nil  ~"="                         --nil
                         | numeral
                         | stringlit                         --string
-                        | FunctionCall ~mut                 --call
+                        | id "(" ListOf<Exp, ","> ")"       --call
                         | Primary "[" Exp "]"               --subscript
                         | id                                --id
-                        | "[[" ListOf<Exp, ","> "]]"        --array
+                        | "[" ListOf<Exp, ","> "]"          --array
                         | "(" Exp ")"                       --parens
     
-    mut                 = ~"==" "=" | "++" | "--"
+    mut                 = ~"==" "=" | "++" | "--" | "["
     pick                = "pick" ~idchar       
     const               = "const" ~idchar      
     log                 = "log" ~idchar
@@ -72,7 +78,8 @@ hooper {
     dunk                = "dunk" ~idchar
     true                = "true" ~idchar    
     false               = "false" ~idchar
-    keyword             = pick | const | log | while | if | putback | break | defineplay | dunk | true | false
+    nil                 = "nil" ~idchar
+    keyword             = pick | const | log | while | if | putback | break | defineplay | dunk | true | false | nil
     id                  = ~keyword letter idchar*
     idchar              = letter | digit | "_"
     numeral             = digit+ ("." digit+)? (("E" | "e") ("+"|"-")? digit+)?

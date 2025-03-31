@@ -25,10 +25,9 @@ hooper {
     WhileStmt           = while Exp Block
     Block               = "{" Stmt* "}" 
     IncrementStmt       = (Primary_subscript | Primary_id) "++" ";"
-    // add decrement
     
     
-    Type                = "Arr[" Type "]"                                   --array                 
+    Type                = Type "[]"                                   --array                 
                         | prim_type
     prim_type           = "number" | "boolean" | "string"
      

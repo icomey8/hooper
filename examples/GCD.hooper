@@ -1,4 +1,4 @@
-play gcd(a, b) 
+define play gcd(a, b) 
     dribble (b !== 0) 
         pick temp = b;
         b = a % b;

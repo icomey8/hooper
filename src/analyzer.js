@@ -87,7 +87,6 @@ export default function analyze(match) {
 
 	function checkArrayOrString(e, parseTreeNode) {
 		check(
-			// TODO FIX DISGUSTING HACK BELOW
 			e.type === "string" || e.type.endsWith("[]"),
 			`Expected string or array`,
 			parseTreeNode
@@ -176,7 +175,6 @@ export default function analyze(match) {
 			context.add(id.sourceString, variable);
 			return core.variableDeclaration(variable, initializer);
 		},
-		// TypeDec() {},
 		IncrementStmt(_op, id, _semi) {
 			const variable = id.analyze();
 			checkNumber(variable, id);
@@ -370,7 +368,7 @@ export default function analyze(match) {
 			return { value: chars.sourceString, type: "string" };
 		},
 		nil(_nil) {
-			return core.nilLiteral(); // Assuming core.nilLiteral() returns { kind: "NilLiteral", type: "any?" }
+			return core.nilLiteral();
 		},
 	});
 

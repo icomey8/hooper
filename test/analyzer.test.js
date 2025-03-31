@@ -31,6 +31,9 @@ const semanticErrors = [
 	["bad index type", 'pick a = [1, 2]; pick i = "0"; pick x = a[i];', /Expected number/],
   	["non-subscriptable", "pick a = 42; pick x = a[0];", /Expected string or array/],
   	["nil without type", "pick x = nil;", /Cannot use nil without a type/],
+	["assign number to string", 'pick x: string = 42;', /Cannot assign number to string/],
+	["assign to const", 'const x = 5; x = 10;', /Assignment to immutable variable/],
+	["mixed array types", 'pick a = [1, "two", 3];', /All elements must have the same type/],
 ];
 
 describe("The analyzer", () => {

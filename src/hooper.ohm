@@ -76,7 +76,7 @@ hooper {
     putback             = "putback" ~idchar      
     break               = "break" ~idchar
     defineplay          = "define play" ~idchar
-    dunk                = "dunk" ~idchar
+    dunk                = "dunk" ~idchar // return
     true                = "true" ~idchar    
     false               = "false" ~idchar
     nil                 = "nil" ~idchar

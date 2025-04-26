@@ -175,30 +175,44 @@ export default function analyze(match) {
 			context.add(id.sourceString, variable);
 			return core.variableDeclaration(variable, initializer);
 		},
-		IncrementStmt(_op, id, _semi) {
-			const variable = id.analyze();
-			checkNumber(variable, id);
+		IncrementStmt(target, _plusplus, _semi) {
+			const variable = target.analyze();
+			checkNumber(variable, target);
 			return core.incrementStatement(variable);
 		},
 		Stmt_break(breakKeyword, _semi) {
 			check(context.inLoop, `Break can only appear in a loop`, breakKeyword);
 			return core.breakStatement();
 		},
-		FunctionDec(_fun, id, params, _eq, exp, _semi) {
+		FunctionDec(_fun, id, params, _arrow, returnType, block) {
+			// _fun, id, params, _eq, exp, _semi
+			// _fun, id, params, _arrow, returnType, block
+
 			checkNotDeclared(id.sourceString, id);
 			context = context.newChildContext();
-			const parameters = params.analyze();
-			const body = exp.analyze();
+			// Directly handle params iteration here
+			const parameters = params.children[1].children.map((p) => p.analyze());
+			const body = block.analyze();
 			context = context.parent;
-			const fun = core.función(id.sourceString, parameters, body.type);
+			const returnTypeString =
+				returnType.children.length > 0
+					? returnType.children[1].sourceString
+					: "void";
+			const fun = core.func(id.sourceString, parameters, returnTypeString);
 			context.add(id.sourceString, fun);
 			return core.functionDeclaration(fun, body);
+
+			// checkNotDeclared(id.sourceString, id);
+			// context = context.newChildContext();
+			// const parameters = params.analyze();
+			// const body = exp.analyze();
+			// context = context.parent;
+			// const fun = core.func(id.sourceString, parameters, body.type);
+			// context.add(id.sourceString, fun);
+			// return core.functionDeclaration(fun, body);
 		},
 		Params(_open, params, _close) {
-			return params
-				.asIteration()
-				.children()
-				.map((p) => p.analyze());
+			return params.asIteration().children.map((p) => p.analyze());
 		},
 		Param(id, _colon, type) {
 			checkNotDeclared(id.sourceString, id);
@@ -359,16 +373,22 @@ export default function analyze(match) {
 			return entity;
 		},
 		true(_) {
-			return { value: true, type: "boolean" };
+			return { kind: "BooleanLiteral", value: true, type: "boolean" };
 		},
 		false(_) {
-			return { value: false, type: "boolean" };
+			return { kind: "BooleanLiteral", value: false, type: "boolean" };
 		},
 		stringlit(_openQuote, chars, _closeQuote) {
 			return { value: chars.sourceString, type: "string" };
 		},
 		nil(_nil) {
 			return core.nilLiteral();
+		},
+		NonemptyListOf(first, _separator, rest) {
+			return [first.analyze(), ...rest.children.map((r) => r.analyze())];
+		},
+		EmptyListOf() {
+			return [];
 		},
 	});
 

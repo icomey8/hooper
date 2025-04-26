@@ -66,7 +66,6 @@ export default function generate(program) {
 			output.push("}");
 		},
 		BinaryExpression(e) {
-			if (e.op === "hypot") return `Math.hypot(${gen(e.left)},${gen(e.right)})`;
 			const op = { "==": "===", "!=": "!==" }[e.op] ?? e.op;
 			return `(${gen(e.left)} ${op} ${gen(e.right)})`;
 		},
@@ -75,6 +74,33 @@ export default function generate(program) {
 		},
 		PrintStatement(s) {
 			output.push(`console.log(${gen(s.argument)});`);
+		},
+		AssignmentStatement(s) {
+			// Emit assignment for variable or subscript targets
+			output.push(`${gen(s.target)} = ${gen(s.source)};`);
+		},
+		IncrementStatement(s) {
+			output.push(`${gen(s.variable)}++;`);
+		},
+		BooleanLiteral(e) {
+			return e.value.toString(); // Converts true/false to the string "true"/"false"
+		},
+		NumericLiteral(e) {
+			return e.value.toString();
+		},
+		StringLiteral(e) {
+			return JSON.stringify(e.value); // Adds quotes around strings
+		},
+		ArrayExpression(e) {
+			return `[${e.elements.map(gen).join(", ")}]`;
+		},
+		FunctionCall(c) {
+			const targetCode = `${gen(c.callee)}(${c.args.map(gen).join(", ")})`;
+			// Calls in expressions vs in statements are handled differently
+			if (c.callee.type.returnType !== voidType) {
+				return targetCode;
+			}
+			output.push(`${targetCode};`);
 		},
 	};
 

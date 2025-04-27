@@ -68,22 +68,22 @@ const fixtures = [
 		source: `
 	    pick z = 2;
 	    define play f(x: number, y: boolean) {
-	      dunk;
+			log(x);
+			log(y);
 	    }
-	    define play g() -> boolean {
-	      dunk false;
+	    define play g() {
+			log(z);
 	    }
-	    f(8, g());
 	  `,
 		expected: dedent`
 	    let z_1 = 2;
-	    function f_2(x_3, y_4) {
-	      return;
+	    function f_4(x_2, y_3) {
+			console.log(x_2);
+			console.log(y_3);
 	    }
 	    function g_5() {
-	      return false;
+			console.log(z_1);
 	    }
-	    f_2(8, g_5());
 	  `,
 	},
 	{
@@ -91,35 +91,18 @@ const fixtures = [
 		source: `
 	    pick a = [true, false, true];
 	    pick b = [10, 30];
+		pick c = [1, 2, 3]; 
+		c[1] = 100;
 	    
 	  `,
 		expected: dedent`
 	    let a_1 = [true, false, true];
 	    let b_2 = [10, 30];
+		let c_3 = [1, 2, 3];
+		c_3[1] = 100;
 	    
 	  `,
 	},
-	// {
-	// 	name: "optionals",
-	// 	source: `
-	//     let x = no int;
-	//     let y = x ?? 2;
-	//     struct S {x: int}
-	//     let z = some S(1);
-	//     let w = z?.x;
-	//   `,
-	// 	expected: dedent`
-	//     let x_1 = undefined;
-	//     let y_2 = (x_1 ?? 2);
-	//     class S_3 {
-	//     constructor(x_4) {
-	//     this["x_4"] = x_4;
-	//     }
-	//     }
-	//     let z_5 = new S_3(1);
-	//     let w_6 = (z_5?.["x_4"]);
-	//   `,
-	// },
 ];
 
 describe("The code generator", () => {

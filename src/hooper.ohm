@@ -8,7 +8,8 @@ hooper {
                         | WhileStmt
                         | break ";"                                         --break  
                         | IncrementStmt
-                        | dunk Exp? ";"                                     --dunk
+                        | dunk Exp ";"                                      --dunk
+                        | dunk ";"                                          --shortdunk
       
     VarDec              = (pick | const) id ":" Type "=" Exp ";"            --withtype
                         | (pick | const) id "=" Exp ";"                     --inference

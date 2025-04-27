@@ -127,6 +127,8 @@ export function shortIfStatement(test, consequent) {
 	};
 }
 
+export const voidType = "void";
+
 export function functionDeclaration(fun, body) {
 	return {
 		kind: "FunctionDeclaration",
@@ -152,10 +154,6 @@ export function functionType(paramTypes, returnType) {
 	return { kind: "FunctionType", paramTypes, returnType };
 }
 
-export function returnStatement(expression) {
-	return { kind: "ReturnStatement", expression };
-}
-
 export function conditional(test, consequent, alternate, type) {
 	return { kind: "Conditional", test, consequent, alternate, type };
 }
@@ -165,4 +163,15 @@ export function nilLiteral() {
 		kind: "NilLiteral",
 		type: "any?",
 	};
+}
+
+export function dunkStatement(expression) {
+	return {
+		kind: "DunkStatement",
+		expression,
+	};
+}
+
+export function shortDunkStatement() {
+	return { kind: "ShortDunkStatement" };
 }

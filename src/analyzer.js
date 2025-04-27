@@ -1,4 +1,5 @@
 import * as core from "./core.js";
+import parse from "./parser.js";
 
 // The semantic analyzer exports a single function, analyze(match), that
 // accepts a grammar match object (the CST) from Ohm and produces the
@@ -93,6 +94,19 @@ export default function analyze(match) {
 		);
 	}
 
+	// function checkReturnSomething(e, parseTreeNode) {
+	// 	const returnsNothing = e.type.returnType === core.voidType;
+	// 	check(returnsNothing, "Something should be returned", parseTreeNode);
+	// }
+
+	// function checkInAFunction(parseTreeNode) {
+	// 	check(
+	// 		context.function,
+	// 		"Dunk can only appear in a function",
+	// 		parseTreeNode
+	// 	);
+	// }
+
 	function checkArgumentCountAndTypes(parameters, args, parseTreeNode) {
 		check(
 			parameters.length === args.length,
@@ -184,6 +198,18 @@ export default function analyze(match) {
 			check(context.inLoop, `Break can only appear in a loop`, breakKeyword);
 			return core.breakStatement();
 		},
+		// Stmt_dunk(dunkKeyword, exp, _semicolon) {
+		// 	checkInAFunction({ parseTreeNode: dunkKeyword });
+		// 	checkReturnSomething(context.function, { parseTreeNode: dunkKeyword });
+		// 	const returnExpression = exp.rep();
+		// 	checkReturnable(
+		// 		returnExpression,
+		// 		{ from: context.function },
+		// 		{ parseTreeNode: exp }
+		// 	);
+		// 	return core.dunkStatement(returnExpression);
+		// },
+		// Stmt_shortdunk(dunkKeyword, _semicolon) {},
 		FunctionDec(_fun, id, params, _arrow, returnType, block) {
 			// _fun, id, params, _eq, exp, _semi
 			// _fun, id, params, _arrow, returnType, block

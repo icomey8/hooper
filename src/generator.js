@@ -2,7 +2,7 @@
 // accepts a program representation and returns the JavaScript translation
 // as a string.
 
-// import { voidType, standardLibrary } from "./core.js";
+import { voidType } from "./core.js";
 
 export default function generate(program) {
 	// When generating code for statements, we'll accumulate the lines of
@@ -37,10 +37,10 @@ export default function generate(program) {
 			output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`);
 		},
 		FunctionDeclaration(d) {
-			output.push(
-				`function ${gen(d.fun)}(${d.fun.params.map(gen).join(", ")}) {`
-			);
-			d.fun.body.forEach(gen);
+			const params = d.fun.parameters.flat();
+			const paramsCode = params.map(gen).join(", ");
+			output.push(`function ${gen(d.fun)}(${paramsCode}) {`);
+			d.body.forEach(gen);
 			output.push("}");
 		},
 		Variable(v) {

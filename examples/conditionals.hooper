@@ -6,3 +6,5 @@ pick num = 0;
     log("The number is negative.");
   putback 
     log("The number is zero.");
+
+# fix

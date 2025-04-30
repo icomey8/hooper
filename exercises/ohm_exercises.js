@@ -16,16 +16,16 @@ const grammars = {
         d = digit
 	  `,
 
-	 	masterCard: String.raw`
+	masterCard: String.raw`
 	      masterCard = ("51".."55" digit{14}) | ("2221".."2720" digit{12})
 	   `,
 
-	 	notThreeEndingInOO: String.raw`
+	notThreeEndingInOO: String.raw`
         word = letter+ ~("o" | "O") ("o" | "O") end
 
 	   `,
 
-    divisibleBy16: String.raw`
+	divisibleBy16: String.raw`
        binNum = zeroes | binaryWithFourZeros
      
        zeroes = "0"+
@@ -34,7 +34,7 @@ const grammars = {
        binary = "0" | "1"
      `,
 
-	 	eightThroughThirtyTwo: String.raw`
+	eightThroughThirtyTwo: String.raw`
        num = digit8_9         
            | oneToNineTeen    
            | twentyToTwentyNine   
@@ -47,7 +47,7 @@ const grammars = {
        digit8_9 = "8" | "9"
 	   `,
 
-	 	notPythonPycharmPyc: String.raw`
+	notPythonPycharmPyc: String.raw`
     word = ~("python" | "pycharm" | "pyc") letter+
 
     float = number "." digit* "e" sign? exponent 
@@ -55,14 +55,14 @@ const grammars = {
     sign = "+" | "-"
     exponent = digit digit? digit? 	   `,
 
-	 	restrictedFloats: String.raw`
+	restrictedFloats: String.raw`
  float = number "." digit* "e" sign? exponent  
     number = digit+
     sign = "+" | "-"
     exponent = digit (digit digit?)? 
 	   `,
 
-       palindromes2358: String.raw`
+	palindromes2358: String.raw`
        palindrome = twoPal | threePal | fivePal | eightPal
      
        twoPal = letter letter
@@ -81,10 +81,9 @@ const grammars = {
        match3 = ~letter any letter
        match5 = ~letter any any any letter
        match8 = ~letter any any any any any any letter
-     `
-     
+     `,
 
-	 	pythonStringLiterals: String.raw`
+	pythonStringLiterals: String.raw`
 string = singleQuotedString | doubleQuotedString | tripleQuotedString | fString
 
 fString = ("f" | "F") (fSingleQuotedString | fDoubleQuotedString | fTripleQuotedString)
@@ -150,117 +149,117 @@ const testFixture = {
 			"4128976567772613 ",
 		],
 	},
-	// masterCard: {
-	// 	good: [
-	// 		"5100000000000000",
-	// 		"5294837679998888",
-	// 		"5309888182838282",
-	// 		"5599999999999999",
-	// 		"2221000000000000",
-	// 		"2720999999999999",
-	// 		"2578930481258783",
-	// 		"2230000000000000",
-	// 	],
-	// 	bad: [
-	// 		"5763777373890002",
-	// 		"513988843211541",
-	// 		"51398884321108541",
-	// 		"",
-	// 		"OH",
-	// 		"5432333xxxxxxxxx",
-	// 	],
-	// },
-	// notThreeEndingInOO: {
-	// 	good: ["", "fog", "Tho", "one", "a", "ab", "food"],
-	// 	bad: ["fOo", "gOO", "HoO", "zoo", "MOO", "123", "A15"],
-	// },
-	// divisibleBy16: {
-	// 	good: [
-	// 		"0",
-	// 		"00",
-	// 		"000",
-	// 		"00000",
-	// 		"00000",
-	// 		"000000",
-	// 		"00000000",
-	// 		"1101000000",
-	// 	],
-	// 	bad: ["1", "00000000100", "1000000001", "dog0000000"],
-	// },
-	// eightThroughThirtyTwo: {
-	// 	good: Array(25)
-	// 		.fill(0)
-	// 		.map((x, i) => i + 8),
-	// 	bad: ["1", "0", "00003", "dog", "", "361", "90", "7", "-11"],
-	// },
-	// notPythonPycharmPyc: {
-	// 	good: [
-	// 		"",
-	// 		"pythons",
-	// 		"pycs",
-	// 		"PYC",
-	// 		"apycharm",
-	// 		"zpyc",
-	// 		"dog",
-	// 		"pythonpyc",
-	// 	],
-	// 	bad: ["python", "pycharm", "pyc"],
-	// },
-	// restrictedFloats: {
-	// 	good: ["1e0", "235e9", "1.0e1", "1.0e+122", "55e20"],
-	// 	bad: ["3.5E9999", "2.355e-9991", "1e2210"],
-	// },
-	// palindromes2358: {
-	// 	good: [
-	// 		"aa",
-	// 		"bb",
-	// 		"cc",
-	// 		"aaa",
-	// 		"aba",
-	// 		"aca",
-	// 		"bab",
-	// 		"bbb",
-	// 		"ababa",
-	// 		"abcba",
-	// 		"aaaaaaaa",
-	// 		"abaaaaba",
-	// 		"cbcbbcbc",
-	// 		"caaaaaac",
-	// 	],
-	// 	bad: ["", "a", "ab", "abc", "abbbb", "cbcbcbcb"],
-	// },
-	// pythonStringLiterals: {
-	// 	good: String.raw`''
-	//   ""
-	//   'hello'
-	//   "world"
-	//   'a\'b'
-	//   "a\"b"
-	//   '\n'
-	//   "a\tb"
-	//   f'\u'
-	//   """abc"""
-	//   '''a''"''"'''
-	//   """abc\xdef"""
-	//   '''abc\$def'''
-	//   '''abc\''''`
-	// 		.split("\n")
-	// 		.map((s) => s.trim()),
-	// 	bad: String.raw`
-	//   'hello"
-	//   "world'
-	//   'a'b'
-	//   "a"b"
-	//   'a''
-	//   "x""
-	//   """"""""
-	//   frr"abc"
-	//   'a\'
-	//   '''abc''''
-	//   """`
-	// 		.split("\n")
-	// 		.map((s) => s.trim()),
-	// },
+	masterCard: {
+		good: [
+			"5100000000000000",
+			"5294837679998888",
+			"5309888182838282",
+			"5599999999999999",
+			"2221000000000000",
+			"2720999999999999",
+			"2578930481258783",
+			"2230000000000000",
+		],
+		bad: [
+			"5763777373890002",
+			"513988843211541",
+			"51398884321108541",
+			"",
+			"OH",
+			"5432333xxxxxxxxx",
+		],
+	},
+	notThreeEndingInOO: {
+		good: ["", "fog", "Tho", "one", "a", "ab", "food"],
+		bad: ["fOo", "gOO", "HoO", "zoo", "MOO", "123", "A15"],
+	},
+	divisibleBy16: {
+		good: [
+			"0",
+			"00",
+			"000",
+			"00000",
+			"00000",
+			"000000",
+			"00000000",
+			"1101000000",
+		],
+		bad: ["1", "00000000100", "1000000001", "dog0000000"],
+	},
+	eightThroughThirtyTwo: {
+		good: Array(25)
+			.fill(0)
+			.map((x, i) => i + 8),
+		bad: ["1", "0", "00003", "dog", "", "361", "90", "7", "-11"],
+	},
+	notPythonPycharmPyc: {
+		good: [
+			"",
+			"pythons",
+			"pycs",
+			"PYC",
+			"apycharm",
+			"zpyc",
+			"dog",
+			"pythonpyc",
+		],
+		bad: ["python", "pycharm", "pyc"],
+	},
+	restrictedFloats: {
+		good: ["1e0", "235e9", "1.0e1", "1.0e+122", "55e20"],
+		bad: ["3.5E9999", "2.355e-9991", "1e2210"],
+	},
+	palindromes2358: {
+		good: [
+			"aa",
+			"bb",
+			"cc",
+			"aaa",
+			"aba",
+			"aca",
+			"bab",
+			"bbb",
+			"ababa",
+			"abcba",
+			"aaaaaaaa",
+			"abaaaaba",
+			"cbcbbcbc",
+			"caaaaaac",
+		],
+		bad: ["", "a", "ab", "abc", "abbbb", "cbcbcbcb"],
+	},
+	pythonStringLiterals: {
+		good: String.raw`''
+	  ""
+	  'hello'
+	  "world"
+	  'a\'b'
+	  "a\"b"
+	  '\n'
+	  "a\tb"
+	  f'\u'
+	  """abc"""
+	  '''a''"''"'''
+	  """abc\xdef"""
+	  '''abc\$def'''
+	  '''abc\''''`
+			.split("\n")
+			.map((s) => s.trim()),
+		bad: String.raw`
+	  'hello"
+	  "world'
+	  'a'b'
+	  "a"b"
+	  'a''
+	  "x""
+	  """"""""
+	  frr"abc"
+	  'a\'
+	  '''abc''''
+	  """`
+			.split("\n")
+			.map((s) => s.trim()),
+	},
 };
 
 for (let name of Object.keys(testFixture)) {

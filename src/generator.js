@@ -76,7 +76,6 @@ export default function generate(program) {
 			output.push(`console.log(${gen(s.argument)});`);
 		},
 		AssignmentStatement(s) {
-			// Emit assignment for variable or subscript targets
 			output.push(`${gen(s.target)} = ${gen(s.source)};`);
 		},
 		IncrementStatement(s) {
@@ -89,14 +88,13 @@ export default function generate(program) {
 			return e.value.toString();
 		},
 		StringLiteral(e) {
-			return JSON.stringify(e.value); // Adds quotes around strings
+			return JSON.stringify(e.value);
 		},
 		ArrayExpression(e) {
 			return `[${e.elements.map(gen).join(", ")}]`;
 		},
 		FunctionCall(c) {
 			const targetCode = `${gen(c.callee)}(${c.args.map(gen).join(", ")})`;
-			// Calls in expressions vs in statements are handled differently
 			if (c.callee.type.returnType !== voidType) {
 				return targetCode;
 			}

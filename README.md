@@ -6,16 +6,13 @@
 
 ## About
 
-Inspired by our love of basketball and how creative it can be in all aspects of the sport, we're setting out to create a JavaScript-like language with some tweaks on syntax, structure, and concurrency.
-When it comes to concurrency, we're especially interested in exploring its inner workings to better understand the event-driven loop.
-To make the language more fun and engaging, we've incorporated basketball-related terminology—something fellow fans might appreciate. 
+Inspired by our love of basketball and how creative it can be in all aspects of the sport, we're setting out to create a JavaScript-like language with some tweaks on syntax and structure.  To make the language more fun and engaging, we've incorporated basketball-related terminology—something fellow fans might appreciate. 
 
 ## Features
 
 - static typing (in-progress)
-- enforced encapsulation
-- inheritance
-- method overloading
+- Control Flow
+- AST Optimization
 
 ## Keyword Guide
 
@@ -26,12 +23,11 @@ To make the language more fun and engaging, we've incorporated basketball-relate
 | turnover | break         |
 | dunk     | return        |
 | pick     | let           |
-| play     | func          |
-| foul     | null literal  |
+| define play | func       |
 | dribble  | while         |
 | reb      | else if       |
 | putback  | else          |
-| to       | console.log() |
+| log       | console.log() |
 
 ## Example Programs
 

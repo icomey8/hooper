@@ -82,7 +82,7 @@ export default function generate(program) {
 			output.push(`${gen(s.variable)}++;`);
 		},
 		BooleanLiteral(e) {
-			return e.value.toString(); // Converts true/false to the string "true"/"false"
+			return e.value.toString();
 		},
 		NumericLiteral(e) {
 			return e.value.toString();
@@ -105,5 +105,3 @@ export default function generate(program) {
 	gen(program);
 	return output.join("\n");
 }
-
-// need type declaration, return, long if statement,

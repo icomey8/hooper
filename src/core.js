@@ -127,8 +127,6 @@ export function shortIfStatement(test, consequent) {
 	};
 }
 
-export const voidType = "void";
-
 export function functionDeclaration(fun, body) {
 	return {
 		kind: "FunctionDeclaration",
@@ -175,3 +173,10 @@ export function dunkStatement(expression) {
 export function shortDunkStatement() {
 	return { kind: "ShortDunkStatement" };
 }
+
+export const booleanType = "boolean";
+export const intType = "int";
+export const floatType = "float";
+export const stringType = "string";
+export const voidType = "void";
+export const anyType = "any";

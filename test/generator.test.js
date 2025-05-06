@@ -18,7 +18,7 @@ const fixtures = [
 	    pick y = true;
 	  `,
 		expected: dedent`
-	    let x_1 = (3 * 7);
+	    let x_1 = 21;
 	    x_1++;
 	    let y_2 = true;
 	  `,

@@ -8,9 +8,9 @@ const regexes = {
 	divisibleBy16: /^(?:0+|[01]*0000)$/,
 	eightThroughThirtyTwo: /^(?:[89]|[1-2]\d|3[0-2])$/,
 	notPythonPycharmPyc: /^(?!(?:python|pycharm|pyc)$)\p{L}*$/u,
-	restrictedFloats: /^ ........ $/i,
-	palindromes2358: /^ ........ $/,
-	pythonStringLiterals: /^ ........ $/,
+	restrictedFloats: /^(?:\d+(?:\.\d*)?|\.\d+)[eE][+-]?\d{1,3}$/i,
+	palindromes2358: /^(?:([abc])\1|([abc])[abc]\2|([abc])([abc])[abc]\4\3|([abc])([abc])([abc])([abc])\8\7\6\5)$/,
+	pythonStringLiterals: /^(?:'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*")$/,
 };
 
 export function matches(name, string) {
